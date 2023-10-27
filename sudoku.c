@@ -72,7 +72,7 @@ int solveSudoku(int grid[N][N], int row, int col)
 
 	// Check if the current position 
 	// of the grid already contains
-	// value > 0, we iterate for next column
+	// value > 0, we repeat for next column
 	if (grid[row][col] > 0)
 		return solveSudoku(grid, row, col + 1);
 
