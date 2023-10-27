@@ -9,6 +9,7 @@ typedef struct Node{
 Node*makeNode(int v){//allocate memory for a new node
     Node* p = (Node*)malloc(sizeof(Node));
     p->value = v; p->next = NULL;
+    return p;
 }
 
 Node* insertLast(Node* h, int v){ //Node *h is the pointer point to the header of the linked list
