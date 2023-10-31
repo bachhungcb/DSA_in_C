@@ -60,9 +60,9 @@ Node* print_List(Node* h){
     if(h == NULL)
         return NULL;
     
-    while(p->next != NULL){
-        p = p->next;
+    while(p != NULL){
         printf("%d ", p->value);
+        p = p->next;
     }
 
     return h;
