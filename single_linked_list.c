@@ -85,6 +85,21 @@ Node* remove_All(Node* h, int v){
     return h;
 }
 
+Node* reverse_list(Node* h){
+    Node* current = h;
+    Node* next_pos = NULL;
+    Node* previous = NULL;
+
+    while(current != NULL){
+        next_pos = current->next;
+        current->next = previous;
+        previous = current;
+        current = next_pos;
+    }
+    h = previous;
+    return h;
+}
+
 int main(){
     Node* q = insert_Last(q, 6);
     insert_Last(q, 9);
@@ -97,7 +112,7 @@ int main(){
 
     print_List(q);
     printf("\n");
-    remove_All(q, 6);
+    reverse_list(q);
     printf("\n");
     print_List(q);
     
