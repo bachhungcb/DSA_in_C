@@ -101,7 +101,8 @@ Node* reverse_list(Node* h){
 }
 
 int main(){
-    Node* q = insert_Last(q, 6);
+    Node* q = NULL;
+    q = insert_Last(q, 6);
     insert_Last(q, 9);
     insert_Last(q, 1);
     insert_Last(q, 4);
@@ -112,7 +113,7 @@ int main(){
 
     print_List(q);
     printf("\n");
-    reverse_list(q);
+    q = reverse_list(q);
     printf("\n");
     print_List(q);
     
