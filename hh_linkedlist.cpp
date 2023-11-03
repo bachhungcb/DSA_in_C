@@ -56,6 +56,7 @@ void addbefore(Node* head, int k, int x){
     }
 	
 }
+
 void addafter(Node* head, int k, int x){
 	Node* t = head;
 	while (t->data != x && t->next != NULL){
