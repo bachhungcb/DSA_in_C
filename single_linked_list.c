@@ -186,7 +186,7 @@ int main(){
         if(strcmp(choice, "addfirst") == 0){
             int value;
             scanf("%d", &value);
-            if(check_value(q,value)){
+            if(check_value(q,value) == 0){
                 q = add_First(q, value);
             }
         }
@@ -194,7 +194,7 @@ int main(){
         if(strcmp(choice, "addafter") == 0){
             int value, add;
             scanf("%d %d", &add, &value);
-            if(check_value(q,value) == 0 && check_value(q,add) == 1){
+            if(check_value(q,value) == 1 && check_value(q,add) == 0){
                 q = add_After(q, add, value);
             }
         }
@@ -202,7 +202,7 @@ int main(){
         if(strcmp(choice, "addbefore") == 0){
             int value, add;
             scanf("%d %d", &add, &value);
-            if(check_value(q,value) == 0 && check_value(q,add) == 1){
+            if(check_value(q,value) == 1 && check_value(q,add) == 0){
             q = add_Before(q, add, value);
             }
         }
