@@ -104,5 +104,6 @@ int main(){
     head = remove_Smallest(head);
     printf("\n");
     print_list(head);
+    free(head);
     return 0;
 }
