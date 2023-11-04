@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <limits.h>
 typedef struct Node{
     int value;
     struct Node *next;
@@ -46,20 +46,22 @@ Node* remove_Node(Node* h, int v){
     
     while(p != NULL){
         if(p->value == v) break;
+        prev = p;
         p = p->next;
     }
 
-    if(p->next != NULL){
+    if(p != NULL){
         if(prev != NULL){
             prev->next = p->next;
         }else{
             h = p->next;
         }
+        free(p);
     }
 
-    free(p);
     return h;
 }
+
 
 Node* remove_Biggest(Node* h){
     Node* p = h;
@@ -75,6 +77,20 @@ Node* remove_Biggest(Node* h){
     return remove_Node(h, max);
 }
 
+Node* remove_Smallest(Node* h){
+    Node* p = h;
+    if(h == NULL)
+        return NULL;
+    int min = INT_MAX;
+    while(p != NULL){
+        if(p->value < min)
+            min = p->value;
+        p = p->next;
+    }
+    
+    return remove_Node(h, min);
+}
+
 int main(){
     Node* head = NULL;
     head = insert_Last(head, 5);
@@ -85,6 +101,7 @@ int main(){
 
     print_list(head);
     head = remove_Biggest(head);
+    head = remove_Smallest(head);
     printf("\n");
     print_list(head);
     return 0;
