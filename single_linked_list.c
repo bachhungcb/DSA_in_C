@@ -224,5 +224,6 @@ int main(){
      
 
     print_List(q);
+    free(q);
     return 0;
 }
