@@ -75,13 +75,11 @@ Node* find_list(Node* h, char* ten){
         return NULL;
 
     while(p->next != NULL){
-        if(strcmp(p->name, ten) == 0){
-            prev = p; break;
-        } 
+        if(strcmp(p->name, ten) == 0) break;
         p = p->next;
     }
     
-    if(p == NULL){
+    if(p->next == NULL && strcmp(p->name, ten) != 0){
         printf("Khong tim thay ho so.");
     }else{
         printf("Ten sinh vien la\t: %s", p->name);
