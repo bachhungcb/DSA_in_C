@@ -74,27 +74,19 @@ Node* find_list(Node* h, char* ten){
     if(h == NULL)
         return NULL;
 
-    while(p->next != NULL && strcmp(p->name, ten) != 0)
-        p = p->next;
-
-    if(p->next != NULL){
-        if(prev == NULL){
-            printf("Ten sinh vien\t:%s\n", h->name);
-            printf("Email\t:%s\n", h->email);
-        }else{
-            printf("Ten sinh vien\t:%s\n", p->name);
-            printf("Email\t:%s\n", p->email);
-        }
-    }
-    else{
+    while(p->next != NULL){
         if(strcmp(p->name, ten) == 0){
-            printf("Ten sinh vien\t:%s\n", p->name);
-            printf("Email\t\t:%s\n", p->email);
-        }else{
-            printf("Khong tim thay sinh vien");
-        }
+            prev = p; break;
+        } 
+        p = p->next;
     }
-
+    
+    if(p == NULL){
+        printf("Khong tim thay ho so.");
+    }else{
+        printf("Ten sinh vien la\t: %s", p->name);
+        printf("Email sinh vien la\t: %s", p->email);
+    }
     return(h);
 }
 int menu(){
