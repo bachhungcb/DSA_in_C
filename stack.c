@@ -44,20 +44,42 @@ void printList(){
         printf("%c", p->cha);
 }
 
+int kiem_tra(char a, char b){
+    if(a == '(' && b ==')') return 1;
+    if(a == '[' && b ==']') return 1;
+    if(a == '{' && b =='}') return 1;
+    return 0;
+}
+
+int check(char* s){
+    for(int i = 0; s[i] != 0; i++){
+
+        if(s[i] == '(' || s[i] == '[' || s[i] == '{' ){
+            push(s[i]);
+        }else{
+            if(stackEmpty()){
+                return 0;
+            }
+            char x = pop();
+            if(!kiem_tra(x,s[i])){
+                return 0;
+            }
+        }
+   }
+
+   return stackEmpty();
+}
+
 int main(){
-    Node* stack = NULL;
     initStack();
     char my_string[100];
-    push('c');
-    push('h');
-    push('a');
-    push('o');
-    push('!');
     
-    printList();
-    printf("\n%c\n", pop());
-    printList();
-    
-    free(stack);
+    scanf("%s", my_string);
+
+    printf("%d", check(my_string));
+
+    while(top!= NULL)
+        pop();
+
     return 0;
 }
