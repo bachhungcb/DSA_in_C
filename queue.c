@@ -1,61 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX 100
 
-int kiem_tra[100][100] = {0};
-
-typedef struct Node {
-    int cot;
-    int hang;
+typedef struct Node{
+    int row,col; //chi so hang va so cot hien tai
+    int step;    //chi so buoc hien tai
     struct Node* next;
-} Node;
+    struct Node* prarent; 
+}Node;
 
-Node* queue = NULL;
+Node* head, *tail;
 
-Node* makeNode(int v, int x) {
-    Node* p = (Node*)malloc(sizeof(Node));
-    p->hang = v;
-    p->cot = x;
-    p->next = NULL;
-    return p;
+Node* listNode[MAX*MAX];
+int szlist = 0;
+
+int n,m; //mecung NxM
+int r0,c0;
+int visited[MAX][MAX];
+
+const int dr[4] = {1, -1, 0, 0}; //do lech giua cac hang
+const int dc[4] = {0, 0, 1, -1}; //do lech giua cac cot
+
+Node* finalNode;
+
+Node* makeNode(int row, int col, int step, Node* parent){
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->row = row; node->col = col; node->next = NULL;
+    node->prarent = parent; node->step = step;
+    return node;
 }
 
-Node* enqueue(Node* h, int ha, int c) {
-    Node* p = h;
-    if (h == NULL)
-        return makeNode(ha, c);
-
-    while (p->next != NULL)
-        p = p->next;
-
-    Node* q = makeNode(ha, c);
-    p->next = q;
-    return h;
+void initQueue(){
+    head == NULL; tail == NULL;
 }
 
-void printList(Node* h) {
-    Node* p = h;
-    while (p != NULL) {
-        printf("%d %d", p->hang, p->cot);
-        p = p->next;
+int emptyQueue(){
+    return head == NULL && tail == NULL;
+}
+
+void pushQueue(Node* node){
+    if(emptyQueue()){
+        head = node; tail = node;
+    }else{
+        tail->next = node; tail = node;
     }
 }
 
-Node* dequeue(Node* h) {
-    if (h == NULL)
-        return NULL;
-
-    Node* temp = h;
-    Node* newHead = temp->next;
-    free(temp);
-    return newHead;
+Node* popQueue(){
+    if(emptyQueue()) return NULL;
+    Node* node = head; head = node->next;
+    if(head == NULL) tail = NULL;
+    return node;
 }
 
-int emptyQueue() {
-    return queue == NULL;
-}
-
-int main() {
-    int me_cung[6][6] = {
+int A[6][6] = {
         {2, 2, 2, 2, 1, 2},
         {2, 0, 0, 0, 1, 2},
         {1, 1, 0, 1, 1, 1},
@@ -63,50 +61,83 @@ int main() {
         {1, 0, 0, 0, 3, 1},
         {1, 1, 1, 1, 1, 1}
     };
-    int mt_di[6][6] = {0};
 
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 6; j++) {
-            if (me_cung[i][j] == 3) {
-                queue = enqueue(queue, i, j);
-                kiem_tra[i][j] = 1;
+int legal(int row, int col){
+    return A[row][col] != 1 && !visited[row][col];
+}
+
+
+int target(int row, int col){
+    return row < 1 || row > n || col < 1 || col > m;
+}
+
+void finalize(){
+    for(int i = 0; i < szlist; i++)
+        free(listNode[i]);
+
+    // Free memory of linked list nodes
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+
+
+void addList(Node* node){
+    listNode[szlist] = node;
+    szlist++;
+}
+
+int main(){
+    n = m = 6;
+
+    for(int r = 0; r < n; r++){
+        for(int c = 0; c < m; c++){
+            visited[r][c] = 0;
+        }
+    }
+
+    for(int r = 0; r < n; r++){
+        for(int c = 0; c < m; c++){
+            if(A[r][c] == 3){
+                r0 = r;
+                c0 = c;
             }
         }
     }
 
-    while (!emptyQueue()) {
-        Node* current = queue;
-        queue = dequeue(queue);
-        int currentHang = current->hang;
-        int currentCot = current->cot;
-
-        mt_di[currentHang][currentCot] = 1;
-
-        // Check and enqueue neighboring cells
-        if (currentHang - 1 >= 0 && me_cung[currentHang - 1][currentCot] == 0 && kiem_tra[currentHang - 1][currentCot] == 0) {
-            queue = enqueue(queue, currentHang - 1, currentCot);
-            kiem_tra[currentHang - 1][currentCot] = 1;
+    initQueue();
+    Node* startNode = makeNode(r0, c0, 0, NULL);
+    addList(startNode);
+    pushQueue(startNode);
+    visited[r0][c0] = 1;
+    while(!emptyQueue()){
+        Node* node = popQueue();
+        printf("POP (%d,%d)\n", node->col, node->row);
+        for(int k = 0; k < 4; k++){
+            int nr = node->row + dr[k];
+            int nc = node->col + dc[k];
+            if(legal(nr,nc)){
+                visited[nr][nc] = 1;
+                Node* newNode = makeNode(nr,nc,node->step+1, node);
+                addList(newNode);
+                if(target(nr,nc)){
+                    finalNode = newNode; break;
+                }else{
+                    pushQueue(newNode);
+                }
+            }
         }
-        if (currentHang + 1 < 6 && me_cung[currentHang + 1][currentCot] == 0 && kiem_tra[currentHang + 1][currentCot] == 0) {
-            queue = enqueue(queue, currentHang + 1, currentCot);
-            kiem_tra[currentHang + 1][currentCot] = 1;
-        }
-        if (currentCot - 1 >= 0 && me_cung[currentHang][currentCot - 1] == 0 && kiem_tra[currentHang][currentCot - 1] == 0) {
-            queue = enqueue(queue, currentHang, currentCot - 1);
-            kiem_tra[currentHang][currentCot - 1] = 1;
-        }
-        if (currentCot + 1 < 6 && me_cung[currentHang][currentCot + 1] == 0 && kiem_tra[currentHang][currentCot + 1] == 0) {
-            queue = enqueue(queue, currentHang, currentCot + 1);
-            kiem_tra[currentHang][currentCot + 1] = 1;
-        }
+        if(finalNode != NULL) break; //found solution
     }
 
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 6; j++) {
-            printf("%d ", mt_di[i][j]);
-        }
-        printf("\n");
+    Node* s = finalNode;
+    while (s!=NULL)
+    {
+        printf("(%d, %d)", s->row,s->col);
+        s = s->prarent;
     }
-
-    return 0;
+    finalize();
 }
