@@ -3,147 +3,164 @@
 #include <string.h>
 
 typedef struct Node{
-    char name[256];
-    struct Node* leftMostChild;
-    struct Node* rightSibling;
-}Node; 
+    int id;
+    struct Node* leftChild;
+    struct Node* rightChild;
+}Node;
 Node* root;
 
-Node* makeNode(char *name){
-    Node* p = (Node*)malloc(sizeof(Node));
-    strcpy (p->name,name);
-    p->leftMostChild = NULL; p->rightSibling = NULL;
+Node* makeNode(int id){
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->id = id;
+    p->leftChild = NULL; p->rightChild = NULL;
     return p;
 }
 
-
-Node* find(Node* r, char *name){
-    if(r == NULL) return NULL;
-    if(strcmp(r->name,name) == 0) return r;
-    Node *p = r->leftMostChild;
-
-    while(p != NULL){
-        Node *q = find(p, name);
-        if(q != NULL) return q;
-        p = p->rightSibling;
-    }
+Node* find (Node *r, int id){
+    if(r == NULL)return NULL;
+    if(r->id == id) return r;
+    Node* p = find(r->leftChild, id);
+    if(p != NULL)return p;
+    return find(r->rightChild, id);
 }
 
-Node* addLast(Node *p, char *name){
-    if(p==NULL) return makeNode(name);
-    p->rightSibling = addLast(p->rightSibling, name);
-    return p;
-}
+void addLeftChild(int u, int left){
+    Node *pu = find(root,u);
 
-void addChild(char *name, char *child){
-    Node* r = find(root, name);
-    if(r == NULL) return;
-    r->leftMostChild = addLast(r->leftMostChild,child);
-}
-
-void printTree(Node* r){
-    if(r == NULL) return;
-    printf("%s->", r->name);
-    Node *p = r->leftMostChild;
-
-    while(p != NULL){
-        printf("%s->", p->name);
-        p = p->rightSibling;
+    if(pu == NULL){
+        printf("Khong tim thay node %d\n", u); return;
     }
 
+    if(pu->leftChild != NULL){
+        printf("Node %d da co leftChild\n", u);
+        return;
+    }
+
+    pu->leftChild = makeNode(left);
+}
+
+void addRightChild(int u, int right){
+    Node *pu = find(root, u);
+
+    if(pu == NULL){
+        printf("Khong tim thay node %d", u);
+        return;
+    }
+
+    if(pu->rightChild != NULL){
+        printf("Node %d da co rightChild\n", u);
+        return;
+    }
+
+    pu->rightChild = makeNode(right);
+}
+
+void printTree(Node *r){
+    if(r == NULL)return;
+    printf("%d: ", r->id);
+    if(r->leftChild == NULL) printf("LeftChild = -1\n");
+    else printf("LeftChild = %d\n", r->leftChild->id);
+    if(r->rightChild == NULL) printf("RightChild = -1\n");
+    else printf("RightChild = %d\n", r->rightChild->id);
     printf("\n");
-    p = r->leftMostChild;
-    while (p != NULL){
-            printTree(p);
-            p = p->rightSibling;
-    }
+
+    printTree(r->leftChild);
+    printTree(r->rightChild);
+}
+
+void printChildren(Node *p){
+    if(p->leftChild == NULL) printf("This node %d doesn't have LeftChild",p->id);
+    else printf("LeftChild = %d\n", p->leftChild->id);
+
+    if(p->rightChild == NULL) printf("This node %d doesn't have RightChild", p->id);
+    else printf("RightChild = %d\n", p->rightChild->id);
 }
 
 void processFind(){
-    char name[256]; scanf("%s", name);
-    Node*p = find(root,name);
-    if( p == NULL) printf("Khong tim thay %s", name);
-    else printf("Tim thay %s", name);
-}
-
-void processFindChild(){
-    char name[256];
-    printf("Nhap vao ten can tim kiem: ");
-    scanf("%s->", name);
-    Node *p = find(root, name);
-    if(p == NULL) printf("Khong tim thay %s", name);
-    else{
-        printf("Tim thay ten %s", name);
-        Node *q = p->leftMostChild;
-        while(q != NULL){
-            printf("%s->", q->name); q = q->rightSibling;
-        }
+    int id;
+    printf("Nhap vao node can tim");
+    scanf("%d", &id);
+    Node *p = find(root, id);
+    if(p == NULL){
+        printf("Khong tim thay node %d\n", id);
+    }else{
+        printf("Tim thay node %d\n", id);
+        printChildren(p);
     }
-    printf("\n");
 }
 
-int height(Node* p){
+void printTheWholeTree(){
+    printTree(root);
+}
+
+void processAddLeftChild(){
+    int id,u;
+    printf("Nhap node can them va leftChild cua node do: ");
+    scanf("%d %d", &u,&id);
+    addLeftChild(u,id);
+}
+
+void processAddRightChild(){
+    int id, u;
+    printf("Nhap node can them va RightChild cua node do: ");
+    scanf("%d %d", &u, &id);
+    addRightChild(u,id);
+}
+
+int height(Node *p){
     if(p == NULL) return 0;
     int maxH = 0;
-    Node *q = p->leftMostChild;
-
-    while(q != NULL){
-        int h = height(q);
-        maxH = maxH < h? h: maxH;
-        q = q->rightSibling;
-    }
+    int hl = height(p->leftChild);
+    if(maxH < hl) maxH = hl;
+    int hr = height(p->rightChild);
+    if(maxH < hr) maxH = hr;
     return maxH + 1;
 }
 
 void processHeight(){
-    char name[256];
-    printf("Nhap vao ten can tim:");scanf("%s", name);
-    Node *q = find(root, name);
-    if(q == NULL) printf("Khong tim thay ten %s", name);
-    else{
-        printf("Tim thay ten %s voi do cao %d\n", name, height(q));
-    }   
+    int id;
+    printf("Nhap vao so id cua node can tim: ");
+    scanf("%d", &id);
+    Node *p = find(root,id);
+    if(p == NULL)printf("Khong tim thay node %d trong cay", id);
+    else printf("Chieu cao cua node %d la: %d\n", id, height(p));
 }
 
-int count(Node* r){
-    if(r == NULL) return 0;
-    int cnt = 1;
-    Node *q = r->leftMostChild;
-    while (q != NULL){
-        cnt += count(q);
-        q = q->rightSibling;
-    }
-    return cnt;
+int count(Node *p){
+    if(p==NULL) return 0;
+    return 1 + count(p->leftChild) + count(p->rightChild);
+}
+
+void printLeaves(Node *p){
+    if(p == NULL)return;
+    if(p->leftChild == NULL && p->rightChild == NULL)
+        printf("%d", p->id);
+    printLeaves(p->leftChild);
+    printLeaves(p->rightChild);
+}
+
+void procressPrintLeaves(){
+    printLeaves(root); printf("\n");
 }
 
 void processCount(){
-    printf("So node cua cay la: %d\n", count(root));
+    printf("So luong node co trong cay la: %d", count(root));
 }
 
-void freeTree(Node* r) {
-    if (r == NULL) return;
-
-    Node* q = r->leftMostChild;
-    while (q != NULL) {
-        Node* sp = q->rightSibling;
-        freeTree(q);  
-        q = sp;
-    }
-
-    printf("Da giai phong node: %s\n", r->name);
-    free(r);
+void freeTree(Node* r){
+    if(r==NULL) return;
+    freeTree(r->leftChild);
+    freeTree(r->rightChild);
+    free(r); r = NULL;
 }
 
 int main(){
-    root == NULL;
-    root = addLast(root, "a");
-    addChild("a","b");
-    addChild("a","d");
-    addChild("b", "c");
-    printTree(root);
-    processCount();
-    processFindChild();
-    processHeight();
+    root = makeNode(1);
+    addLeftChild(1, 2);
+    addRightChild(1, 3);
+    addLeftChild(2,4);
+    addLeftChild(3,5);
+    printTheWholeTree(root);
     freeTree(root);
     return 0;
 }
