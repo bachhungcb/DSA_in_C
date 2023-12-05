@@ -144,7 +144,7 @@ void procressPrintLeaves(){
 }
 
 void processCount(){
-    printf("So luong node co trong cay la: %d", count(root));
+    printf("So luong node co trong cay la: %d\n", count(root));
 }
 
 void freeTree(Node* r){
@@ -160,7 +160,9 @@ int main(){
     addRightChild(1, 3);
     addLeftChild(2,4);
     addLeftChild(3,5);
+    
     printTheWholeTree(root);
+    processCount();
     freeTree(root);
     return 0;
 }
