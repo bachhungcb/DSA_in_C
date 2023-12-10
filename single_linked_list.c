@@ -172,7 +172,7 @@ int main(){
         q = insert_Last(q, num);
     }
     
-     while (1){
+    while (1){
         scanf("%s", choice);
 
         if(strcmp(choice, "addlast") == 0){

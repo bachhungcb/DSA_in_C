@@ -155,14 +155,32 @@ void freeTree(Node* r){
 }
 
 int main(){
-    root = makeNode(1);
-    addLeftChild(1, 2);
-    addRightChild(1, 3);
-    addLeftChild(2,4);
-    addLeftChild(3,5);
+    root = NULL;
+    char choice[256];
+    while (1)
+    {
+        scanf("%s", choice);
+
+        if(strcmp(choice,"MakeRoot") == 0){
+            int makeroot;
+            scanf("%d", &makeroot);
+            root = makeNode(makeroot);
+        }
+
+        if(strcmp(choice,"AddLeft") == 0){
+            int addleft,u;
+            scanf("%d %d", &u, &addleft);
+            addLeftChild(u, addleft);
+        }
+
+        if(strcmp(choice, "AddRight") == 0){
+            int addright, v;
+            scanf("%d %d", &v, &addright);
+            addRightChild(v, addright);
+        }
+
+
+    }
     
-    printTheWholeTree(root);
-    processCount();
-    freeTree(root);
     return 0;
 }
