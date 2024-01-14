@@ -1,33 +1,30 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 #define MAX_PAPERS 100
 #define MAX_REVIEWERS 100
 
-int papers[MAX_PAPERS][MAX_REVIEWERS];
-int reviewers[MAX_REVIEWERS];
-int load[MAX_REVIEWERS];
-
-int compare(const void *a, const void *b) {
-    return (*(int*)a - *(int*)b);
-}
+std::vector<std::vector<int>> papers(MAX_PAPERS, std::vector<int>(MAX_REVIEWERS));
+std::vector<int> reviewers(MAX_REVIEWERS);
+std::vector<int> load(MAX_REVIEWERS);
 
 int main() {
     int N, M, b;
-    scanf("%d %d %d", &N, &M, &b);
+    std::cin >> N >> M >> b;
 
     // Read the list of reviewers for each paper
     for (int i = 0; i < N; i++) {
         int k;
-        scanf("%d", &k);
+        std::cin >> k;
         for (int j = 0; j < k; j++) {
-            scanf("%d", &papers[i][j]);
+            std::cin >> papers[i][j];
         }
     }
 
     // Sort the list of reviewers for each paper in ascending order
     for (int i = 0; i < N; i++) {
-        qsort(papers[i], sizeof(papers[i]) / sizeof(papers[i][0]), sizeof(papers[i][0]), compare);
+        std::sort(papers[i].begin(), papers[i].end());
     }
 
     // Initialize the load of each reviewer to 0
@@ -64,9 +61,9 @@ int main() {
 
     // Check if a solution is found
     if (max_load > b) {
-        printf("-1\n");
+        std::cout << "-1\n";
     } else {
-        printf("%d\n", max_load);
+        std::cout << max_load << "\n";
     }
 
     return 0;
